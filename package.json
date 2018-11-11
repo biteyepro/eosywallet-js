@@ -1,0 +1,19 @@
+{
+  "name": "@biteye/eosywallet-js",
+  "version": "1.0.0",
+  "description": "Eosy Wallet",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "biteye.pro",
+  "license": "MIT",
+  "dependencies": {
+    "@types/crypto-js": "^3.1.43",
+    "@types/long": "^4.0.0",
+    "babel-polyfill": "^6.26.0",
+    "crypto-js": "^3.1.9-1",
+    "eosjs": "^20.0.0-beta2",
+    "eosjs-ecc": "^4.0.4"
+  }
+}
