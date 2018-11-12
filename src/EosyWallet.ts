@@ -58,9 +58,29 @@ export class EosyWallet {
   constructor(networkPlugin: IEosyNetworkPlugin) {
     this.networkPlugin = networkPlugin
   }
-
+  /**
+   * Get rpc
+   *
+   * @returns {JsonRpc}
+   * @memberof EosyWallet
+   */
   public getRpc(): JsonRpc {
     return this.networkPlugin.getRpc()
+  }
+  /**
+   * Get patched api
+   *
+   * @returns {Api}
+   * @memberof EosyWallet
+   */
+  public getApi(): Api {
+    return this.networkPlugin.getApi()
+  }
+  /**
+   * @returns {EosyAccount[]}
+   */
+  public getAccounts(): EosyAccount[] {
+    return this.accounts
   }
 
   /**
@@ -80,10 +100,14 @@ export class EosyWallet {
     return this.networkPlugin.logout()
   }
   /**
-   * @returns {EosyAccount[]}
+   * restore login account
+   *
+   * @param {*} args
+   * @returns {(Promise<EosyAccount[] | boolean>)}
+   * @memberof EosyWallet
    */
-  public getAccounts(): EosyAccount[] {
-    return this.accounts
+  public async restore(args: any): Promise<EosyAccount[] | boolean> {
+    return this.networkPlugin.restore(args)
   }
   /**
    * Login by Network Plugin
@@ -182,7 +206,7 @@ export class EosyWallet {
     if (!(account instanceof EosyAccount)) {
       account = EosyAccount.parse(account) as EosyAccount
     }
-    // 目前只支持转账EOS
+    // Just support EOS
     let actions: object
     if (account.isShareAccount()) {
       actions = [{

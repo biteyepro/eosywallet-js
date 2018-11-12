@@ -1,6 +1,26 @@
 import CryptoJS from 'crypto-js'
 import Long from 'long'
 
+class DummyStorage {
+  private storage: Map<string, string> = new Map<string, string>()
+
+  public getItem(key: string): string | undefined {
+    return this.storage.get(key)
+  }
+
+  public setItem(key: string, val: string): void {
+    this.storage.set(key, val)
+  }
+
+  public removeItem(key: string): void {
+    this.storage.delete(key)
+  }
+
+  public clear(): void {
+    this.storage.clear()
+  }
+}
+
 export class EosyUtil {
   public static AddressAccountName = 'address.bank'
   public static BankAccountName = 'counter.bank'
@@ -45,11 +65,15 @@ export class EosyUtil {
     }
   }
 
-  private static tmpStorage: Map<string, string> = new Map<string, string>()
-  private static getStorage(): any {
+  public static hasStored(key: string): boolean {
+    return !!EosyUtil.getStorage().getItem(key)
+  }
+  public static getStorage(): any {
     if (sessionStorage) {
       return sessionStorage
     }
-    return this.tmpStorage
+    return EosyUtil.tmpStorage
   }
+
+  private static tmpStorage: DummyStorage = new DummyStorage()
 }

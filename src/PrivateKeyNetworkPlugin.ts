@@ -10,6 +10,8 @@ export interface IPrivateKeyNetworkOption {
   privateKey: string
 }
 
+const storeKey = 'ql'
+
 export class PrivateKeyNetworkPlugin extends BaseNetworkPlugin {
   private priKey?: string
   private storePassword?: string
@@ -19,12 +21,27 @@ export class PrivateKeyNetworkPlugin extends BaseNetworkPlugin {
   public async logout(): Promise<void> {
     this.priKey = undefined
     this.storePassword = undefined
-    // TODO: delete from storage
+    // delete from storage
+    EosyUtil.getStorage().removeItem(storeKey)
   }
 
-  // public restore(storePassword: string) {
-
-  // }
+  public async restore(storePassword: string): Promise<EosyAccount[] | boolean> {
+    if (!EosyUtil.hasStored(storeKey)) {
+      return false
+    }
+    const priKey = EosyUtil.getDecrypt(storeKey, storePassword)
+    if (priKey) {
+      try {
+        const accs = await this.login({storePassword, privateKey: priKey})
+        if (accs.length > 0) {
+          return accs
+        }
+      } catch (error) {
+        console.error('Restore failed: ', error)
+      }
+    }
+    return false
+  }
 
   public async login(args: IPrivateKeyNetworkOption): Promise<EosyAccount[]> {
     this.priKey = args.privateKey
@@ -61,6 +78,7 @@ export class PrivateKeyNetworkPlugin extends BaseNetworkPlugin {
     if (accounts.length < 1) {
       throw new Error('Not exist valid account')
     }
+    EosyUtil.saveEncrypt(storeKey, this.priKey, this.storePassword)
     this.api = new Api({rpc: this.rpc, signatureProvider: new JsSignatureProvider([pk]), textEncoder: this.networkOption.textEncoder, textDecoder: this.networkOption.textDecoder})
     return accounts
   }

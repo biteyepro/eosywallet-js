@@ -24,6 +24,7 @@ export interface IEosyNetworkOption {
  */
 export interface IEosyNetworkPlugin {
   login(args: any): Promise<EosyAccount[]>
+  restore(args: any): Promise<EosyAccount[] | boolean>
   logout(): Promise<void>
   getRpc(): JsonRpc
   getApi(): Api

@@ -17,6 +17,7 @@ export abstract class BaseNetworkPlugin implements IEosyNetworkPlugin {
   public getApi(): Api {
     return this.api as Api
   }
+  public abstract restore(args: any): Promise<EosyAccount[] | boolean>
   public abstract login(args: any): Promise<EosyAccount[]>
   public abstract logout(): Promise<void>
 }
