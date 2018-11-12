@@ -2,8 +2,8 @@ import {EosyUtil} from './EosyUtil'
 
 export class EosyAccount {
   /**
-   *
-   * @param {String} name 支持'.'开头的共享账号缩写，accountName@authority这样的写法
+   * Parse account name to EosyAccount
+   * @param name Support: startswith '.' account and split by '@', E.g. '.test11111' is eosy inner account. 'address.bank@test11111' is the same as '.test11111'
    */
   public static parse(name: string): EosyAccount | undefined {
     if (!name || name.length === 0) {

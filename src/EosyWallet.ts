@@ -64,13 +64,16 @@ export class EosyWallet {
   }
 
   /**
-   * @returns {boolean} 是否已经登录
+   * @returns {boolean} Whether or not login
    */
   public isLogin(): boolean {
     return this.accounts.length > 0
   }
   /**
-   * 登出
+   * Logout
+   *
+   * @returns {Promise<void>}
+   * @memberof EosyWallet
    */
   public logout(): Promise<void> {
     this.accounts = []
@@ -109,7 +112,7 @@ export class EosyWallet {
   public async getCurrencyBalance(contractName: string, account: EosyAccount | string, symbol: string = 'EOS'): Promise<string[]> {
     const accName = (account instanceof EosyAccount) ? (account as EosyAccount).getEosyAccountName() : account
     if (accName.charAt(0) === '.') {
-      // TODO: 目前只支持EOS, EOS type is 0
+      // TODO: Just support EOS, EOS type is 0
       const tmp = EosyUtil.encodeName(accName.substring(1))
       const lower = tmp.toString()
       const upper = tmp.add(1).toString()
@@ -126,7 +129,7 @@ export class EosyWallet {
       const rows = rs.rows
       let amount = 0
       if (rows.length > 0) {
-        // 目前只有EOS
+        // Just support EOS
         const b = rows[0].balances.find((c: any) => c.asset_type === 0)
         if (b) {
           amount = b.amount
@@ -162,18 +165,6 @@ export class EosyWallet {
     const rs = await this.getRpc().get_table_rows(options)
     return rs.rows.length > 0
   }
-  // /**
-  //  * 恢复保存的钱包
-  //  * @param {string} password
-  //  * @returns {Promise}
-  //  */
-  // private restore(password) {
-  //   const priKey = EosyWallet.getDecrypt('ql', password)
-  //   if (priKey) {
-  //     return importPrivateKey(priKey)
-  //   }
-  //   return Promise.reject('Not find stored wallet')
-  // }
 
   /**
    * Token transfer...
